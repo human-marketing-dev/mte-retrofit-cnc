@@ -1,4 +1,4 @@
-import { ImageIcon } from "lucide-react";
+import Image from "next/image";
 
 import { ProcessStep } from "@/components/ui/ProcessStep";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -96,19 +96,26 @@ export function PorQueMTE() {
           </div>
         </div>
         <div>
-          {/* Flagged placeholder — client to supply the photograph.
-              Swap this <div> for:
-                <Image src="/porque-mte.jpg" alt="…" width={640} height={480} …/>
-              once the asset lands in public/. The 4:3 box below reserves the
-              same space, so dropping the image in causes no layout shift. */}
-          <div className="img-ph" style={{ aspectRatio: "4 / 3", minHeight: "unset" }}>
-            <ImageIcon className="ic-lg" aria-hidden="true" />
-            <strong style={{ color: "var(--mte-blue)", fontFamily: "var(--font-display)" }}>
-              Imagen pendiente
-            </strong>
-            Fotografía de maquinaria CNC o del taller MTE.
-            <br />
-            Recomendado: proporción 4:3, industrial, tonos fríos, equipo real.
+          {/* The photo is 3:2 (1500×1000); this 4:3 box crops it with
+              object-fit:cover. width/height carry the real intrinsic ratio so
+              next/image reserves the box and nothing shifts on load. */}
+          <div
+            style={{
+              position: "relative",
+              aspectRatio: "4 / 3",
+              borderRadius: "var(--radius-lg)",
+              overflow: "hidden",
+              boxShadow: "var(--shadow-md)",
+            }}
+          >
+            <Image
+              src="/retrofit-imagen-mte.webp"
+              alt="Operador MTE ajustando el control numérico de una máquina CNC en planta"
+              width={1500}
+              height={1000}
+              sizes="(max-width: 860px) 100vw, 50vw"
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+            />
           </div>
         </div>
       </div>
@@ -135,13 +142,12 @@ export function Footer() {
           justifyContent: "space-between",
         }}
       >
-        <Logo onBrand height={34} />
+        <Logo onBrand height={42} />
         <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", fontSize: "14px" }}>
           <a href={PHONE_HREF} style={{ color: "#fff", textDecoration: "none" }}>
             {PHONE_DISPLAY}
           </a>
           <span>Servicio en todo México</span>
-          <span>Distribuidor autorizado SMC</span>
         </div>
       </div>
       <div
@@ -153,8 +159,7 @@ export function Footer() {
           fontSize: "12px",
         }}
       >
-        © {new Date().getFullYear()} MTE Global Solutions · Retrofit y cambio de control CNC ·
-        Fanuc, Siemens, Mitsubishi, Heidenhain y más.
+        © {new Date().getFullYear()} MTE Global Solutions · Retrofit y cambio de control CNC.
       </div>
     </footer>
   );

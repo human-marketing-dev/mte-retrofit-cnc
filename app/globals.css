@@ -294,9 +294,11 @@ button { font-family: inherit; }
    280px min produced exactly 3 columns; widening to 1440px let a 4th fit and
    left a ragged 4+2. A 320px min restores 3 columns at 1440 and still degrades
    to 2 / 1 on tablet and phone. */
+/* min(320px, 100%) — a bare 320px min forces 320px tracks even when the
+   container is narrower, pushing the page sideways on a 320px viewport. */
 .grid-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: var(--space-5);
 }
 
@@ -454,11 +456,21 @@ select.field-control {
 
 /* Header responsive behaviour (was an inline <style> tag upstream) */
 @media (max-width: 920px) { .hdr-nav { display: none !important; } }
-@media (max-width: 560px) {
-  .hdr-phone { display: none; }
-  /* The "GLOBAL SOLUTIONS" descriptor is nowrap; at this width the lockup plus
-     the CTA overflows the viewport. Drop the descriptor, keep mark + wordmark. */
-  header .logo-descriptor { display: none; }
+@media (max-width: 560px) { .hdr-phone { display: none; } }
+
+/* Buttons are nowrap by design, but the longest label ("Solicitar diagnóstico
+   sin costo") is 346px wide — wider than a 320px viewport. Below 400px let the
+   label wrap and grow the button vertically rather than push the page sideways. */
+@media (max-width: 400px) {
+  .btn {
+    white-space: normal;
+    max-width: 100%;
+  }
+  .btn--lg {
+    height: auto;
+    min-height: 56px;
+    padding: 14px 18px;
+  }
 }
 
 /* Motion: restrained. Respect the user's reduced-motion preference. */

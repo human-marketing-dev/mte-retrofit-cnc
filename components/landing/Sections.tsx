@@ -1,6 +1,7 @@
 import {
   Anchor,
   AlertTriangle,
+  ArrowRight,
   Box,
   Cable,
   Cog,
@@ -18,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FeatureCard } from "@/components/ui/FeatureCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -267,7 +269,8 @@ export function Beneficios() {
           <p
             style={{
               flex: 1,
-              minWidth: "280px",
+              // min() guard: a bare 280px overflows the card below ~376px viewport
+              minWidth: "min(280px, 100%)",
               margin: 0,
               fontSize: "1.15rem",
               lineHeight: 1.5,
@@ -287,6 +290,63 @@ export function Beneficios() {
             </FeatureCard>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Mid-page CTA, placed straight after the ROI argument (the <30% card and the
+ * six benefit tiles) — the peak-intent moment. Deliberately a compact strip on
+ * white with a hairline rule, not another brand-blue band: Beneficios above is
+ * grey and Maquinas below is white, so a third full-bleed surface here would
+ * muddy the section rhythm.
+ */
+export function CtaIntermedio() {
+  return (
+    <section
+      className="section"
+      style={{
+        paddingBlock: "clamp(2.5rem, 4vw, 3.5rem)",
+        borderBottom: "1px solid var(--border-subtle)",
+      }}
+    >
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "clamp(16px, 3vw, 40px)",
+          textAlign: "center",
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 800,
+              fontSize: "var(--fs-h3)",
+              letterSpacing: "var(--ls-tight)",
+              color: "var(--text-heading)",
+              margin: 0,
+            }}
+          >
+            ¿Su máquina es candidata a un retrofit?
+          </h2>
+          <p style={{ marginTop: "8px", color: "var(--text-body)" }}>
+            Lo confirmamos con un diagnóstico sin costo. Respuesta en menos de 24 h hábiles.
+          </p>
+        </div>
+        <Button
+          variant="primary"
+          size="lg"
+          href="#contacto"
+          iconRight={<ArrowRight className="ic-sm" aria-hidden="true" />}
+        >
+          Solicitar diagnóstico sin costo
+        </Button>
       </div>
     </section>
   );
@@ -319,7 +379,7 @@ export function Maquinas() {
                 marginBottom: "18px",
               }}
             >
-              Tipos de máquina
+              Atendemos todo tipo de maquinaria
             </h3>
             <div style={{ display: "grid", gap: "12px" }}>
               {TIPOS.map(({ Icon, label }) => (
@@ -361,7 +421,8 @@ export function Maquinas() {
               Marcas de control
             </h3>
             <p style={{ marginBottom: "18px", lineHeight: "var(--lh-relaxed)" }}>
-              Instalamos control de última generación de las dos marcas líderes en control numérico:
+              Instalamos en cualquier equipo CNC controles de última generación de las dos marcas
+              líderes en control numérico:
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
               {MARCAS.map((m) => (

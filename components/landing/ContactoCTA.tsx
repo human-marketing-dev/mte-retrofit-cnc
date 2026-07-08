@@ -1,12 +1,9 @@
-"use client";
+import type { CSSProperties } from "react";
+import { MessageCircle, Phone } from "lucide-react";
 
-import { useState, type CSSProperties } from "react";
-import { ArrowRight, CheckCircle, MessageCircle, Phone } from "lucide-react";
-
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Field, Input } from "@/components/ui/Field";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { DiagnosticoForm } from "./DiagnosticoForm";
 import { PATTERN_SRC, PHONE_DISPLAY, PHONE_HREF, WA_LINK } from "./constants";
 
 const ctaRow: CSSProperties = {
@@ -33,9 +30,9 @@ const ctaLbl: CSSProperties = {
 };
 const ctaVal: CSSProperties = { fontSize: "13px", color: "var(--mte-blue-200)" };
 
+/* The form is the only interactive part, and it now owns its own "use client"
+   boundary — so this section is back to being a Server Component. */
 export function ContactoCTA() {
-  const [sent, setSent] = useState(false);
-
   return (
     <section
       id="contacto"
@@ -97,91 +94,7 @@ export function ContactoCTA() {
         </div>
 
         <Card tone="light" padding="clamp(24px,3vw,36px)">
-          {sent ? (
-            <div style={{ textAlign: "center", padding: "40px 12px" }} role="status">
-              <CheckCircle
-                className="ic-lg"
-                style={{ color: "var(--mte-success)", display: "inline-flex" }}
-                aria-hidden="true"
-              />
-              <h3 style={{ fontFamily: "var(--font-display)", marginTop: "14px" }}>
-                ¡Gracias! Le contactaremos pronto.
-              </h3>
-              <p style={{ marginTop: "8px" }}>
-                Un especialista revisará su caso y le responderá a la brevedad.
-              </p>
-            </div>
-          ) : (
-            /* NOTE: the design ships a front-end-only submit — it flips to the
-               thank-you state without sending anything anywhere. Wire this to a
-               Server Action or route handler before going live. */
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSent(true);
-              }}
-            >
-              <h3
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 800,
-                  fontSize: "1.4rem",
-                  marginBottom: "6px",
-                  color: "var(--text-heading)",
-                }}
-              >
-                Solicite su diagnóstico sin costo
-              </h3>
-              <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "20px" }}>
-                Respuesta en menos de 24 h hábiles.
-              </p>
-              <div style={{ display: "grid", gap: "14px" }}>
-                <Field label="Nombre" required>
-                  <Input name="nombre" required placeholder="Su nombre" autoComplete="name" />
-                </Field>
-                <div className="grid-2" style={{ gap: "14px" }}>
-                  <Field label="Empresa">
-                    <Input name="empresa" placeholder="Empresa" autoComplete="organization" />
-                  </Field>
-                  <Field label="Teléfono / WhatsApp" required>
-                    <Input
-                      name="telefono"
-                      type="tel"
-                      required
-                      placeholder="+52..."
-                      autoComplete="tel"
-                    />
-                  </Field>
-                </div>
-                <Field label="Correo">
-                  <Input
-                    name="correo"
-                    type="email"
-                    placeholder="correo@empresa.com"
-                    autoComplete="email"
-                  />
-                </Field>
-                <Field
-                  label="Tipo de máquina y marca de control"
-                  hint="Ej. Torno Fanuc 0i, Fresadora Siemens 840D"
-                >
-                  <Input name="equipo" placeholder="Describa su equipo" />
-                </Field>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  type="submit"
-                  iconRight={<ArrowRight className="ic-sm" aria-hidden="true" />}
-                >
-                  Solicitar diagnóstico sin costo
-                </Button>
-                <p style={{ fontSize: "12px", color: "var(--text-muted)", textAlign: "center" }}>
-                  Sus datos se usan únicamente para contactarle sobre su proyecto.
-                </p>
-              </div>
-            </form>
-          )}
+          <DiagnosticoForm />
         </Card>
       </div>
     </section>

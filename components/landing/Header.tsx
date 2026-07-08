@@ -2,6 +2,8 @@ import type { CSSProperties } from "react";
 import { ArrowRight, Award, BadgeCheck, MapPin, MessageCircle, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { DiagnosticoForm } from "./DiagnosticoForm";
 import { Logo } from "./Logo";
 import { PATTERN_SRC, PHONE_DISPLAY, PHONE_HREF, WA_LINK } from "./constants";
 
@@ -36,7 +38,7 @@ export function Header() {
           gap: "20px",
         }}
       >
-        <Logo height={36} />
+        <Logo height={46} />
         <nav className="hdr-nav" style={{ display: "flex", alignItems: "center", gap: "28px" }}>
           <a href="#proceso" style={navLink}>
             Proceso
@@ -109,10 +111,14 @@ export function Hero() {
         }}
       />
       <div
-        className="container"
-        style={{ position: "relative", paddingBlock: "clamp(3.5rem, 7vw, 6.5rem)" }}
+        className="container grid-2"
+        style={{
+          position: "relative",
+          paddingBlock: "clamp(3.5rem, 7vw, 6.5rem)",
+          alignItems: "center",
+        }}
       >
-        <div style={{ maxWidth: "720px", color: "#fff" }}>
+        <div style={{ color: "#fff" }}>
           <div className="mte-eyebrow" style={{ marginBottom: "18px" }}>
             Especialistas en control numérico · México
           </div>
@@ -164,24 +170,6 @@ export function Hero() {
             >
               Solicitar diagnóstico sin costo
             </Button>
-            <Button
-              variant="whatsapp"
-              size="lg"
-              href={WA_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              icon={<MessageCircle className="ic-sm" aria-hidden="true" />}
-            >
-              WhatsApp directo
-            </Button>
-            <Button
-              variant="onBrandOutline"
-              size="lg"
-              href={PHONE_HREF}
-              icon={<Phone className="ic-sm" aria-hidden="true" />}
-            >
-              Llamar ahora
-            </Button>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 22px", marginTop: "36px" }}>
             {TRUST_MARKS.map(({ Icon, label }) => (
@@ -202,6 +190,12 @@ export function Hero() {
             ))}
           </div>
         </div>
+
+        {/* Lead form, above the fold. Same component as the closing CTA — each
+            instance keeps its own submitted state. */}
+        <Card tone="light" padding="clamp(22px,2.5vw,32px)">
+          <DiagnosticoForm headingAs="h2" compact />
+        </Card>
       </div>
     </section>
   );
