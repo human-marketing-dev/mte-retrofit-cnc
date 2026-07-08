@@ -1,26 +1,476 @@
-@import "tailwindcss";
+/* ===========================================================================
+   MTE GLOBAL SOLUTIONS — DESIGN SYSTEM
+   Ported from the Claude Design project "Design System" (d61f6d47).
+   Source of truth: mteglobalsolutions.com
 
+   Order mirrors the upstream styles.css @import manifest:
+     fonts -> colors -> typography -> spacing -> base -> layout utilities
+   Fonts are loaded via next/font in app/layout.tsx (self-hosted, no Google
+   Fonts request), so the upstream tokens/fonts.css @import is replaced by the
+   --font-montserrat / --font-roboto variables it injects.
+   ===========================================================================*/
+
+/* ===========================================================================
+   COLOR TOKENS
+   Brand blue sampled from mteglobalsolutions.com  -> #003399 (rgb 0 51 153)
+   Accent cyan sampled from the hero square-pattern -> #2BA8DB
+   ===========================================================================*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Brand blue scale (primary) --------------------------------------- */
+  --mte-blue-950: #001233;
+  --mte-blue-900: #001f5c;
+  --mte-blue-800: #002a80;
+  --mte-blue-700: #002d8c;
+  --mte-blue:     #003399;   /* CORE BRAND BLUE */
+  --mte-blue-600: #1542a1;   /* translucent square fill on the hero pattern */
+  --mte-blue-500: #2a52ad;
+  --mte-blue-400: #4f72c2;
+  --mte-blue-300: #8499d6;
+  --mte-blue-200: #b9c5e8;
+  --mte-blue-100: #dde4f4;
+  --mte-blue-50:  #eef2fa;
+
+  /* --- Accent cyan (highlights, outlines, hover) ------------------------ */
+  --mte-cyan-700: #1a7aab;
+  --mte-cyan-600: #2390c6;
+  --mte-cyan:     #2ba8db;   /* CORE ACCENT */
+  --mte-cyan-400: #5bbde4;
+  --mte-cyan-300: #8fd2ed;
+  --mte-cyan-100: #d6eef8;
+
+  /* --- Neutrals (UI on light surfaces) ---------------------------------- */
+  --mte-white:    #ffffff;
+  --mte-gray-50:  #f6f7f9;
+  --mte-gray-100: #eceef2;
+  --mte-gray-200: #dde0e7;
+  --mte-gray-300: #c3c8d2;
+  --mte-gray-400: #9aa1b0;
+  --mte-gray-500: #6c7484;
+  --mte-gray-600: #4d5564;
+  --mte-gray-700: #353c49;
+  --mte-gray-800: #232932;
+  --mte-gray-900: #141820;
+
+  /* --- Semantic / status ------------------------------------------------ */
+  --mte-success: #1f9d5b;
+  --mte-warning: #e0892b;
+  --mte-danger:  #d23b3b;
+
+  /* --- WhatsApp brand green (fixed, not an MTE token) ------------------- */
+  --whatsapp: #25d366;
+
+  /* =====================================================================
+     SEMANTIC ALIASES  (use these in components, not raw values)
+     =====================================================================*/
+  --color-brand:           var(--mte-blue);
+  --color-brand-deep:      var(--mte-blue-900);
+  --color-accent:          var(--mte-cyan);
+
+  --surface-page:          var(--mte-white);
+  --surface-page-alt:      var(--mte-gray-50);
+  --surface-card:          var(--mte-white);
+  --surface-brand:         var(--mte-blue);        /* dark blue section bg */
+  --surface-brand-deep:    var(--mte-blue-900);
+  --surface-inverse:       var(--mte-blue);
+
+  --text-heading:          var(--mte-gray-900);
+  --text-body:             var(--mte-gray-600);
+  --text-muted:            var(--mte-gray-500);
+  --text-on-brand:         var(--mte-white);
+  --text-on-brand-muted:   var(--mte-blue-200);
+  --text-link:             var(--mte-blue);
+
+  --border-subtle:         var(--mte-gray-200);
+  --border-strong:         var(--mte-gray-300);
+  --border-on-brand:       rgba(255, 255, 255, 0.18);
+
+  --focus-ring:            var(--mte-cyan);
+
+  /* Hero / pattern helpers */
+  --pattern-square-fill:   rgba(255, 255, 255, 0.06);
+  --pattern-square-line:   var(--mte-cyan);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ===========================================================================
+   TYPOGRAPHY TOKENS
+   ===========================================================================*/
+:root {
+  /* Families — the vars come from next/font (see app/layout.tsx) */
+  --font-display: var(--font-montserrat), 'Helvetica Neue', Arial, sans-serif;
+  --font-body:    var(--font-roboto), 'Helvetica Neue', Arial, sans-serif;
+
+  /* Weights */
+  --fw-light:     300;
+  --fw-regular:   400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      700;
+  --fw-extrabold: 800;
+  --fw-black:     900;
+
+  /* Type scale (rem, 16px base) ----------------------------------------- */
+  --fs-display:   clamp(2.75rem, 5vw, 4.25rem);
+  --fs-h1:        clamp(2.25rem, 4vw, 3.25rem);
+  --fs-h2:        clamp(1.75rem, 3vw, 2.5rem);
+  --fs-h3:        1.5rem;
+  --fs-h4:        1.25rem;
+  --fs-lead:      1.25rem;
+  --fs-body:      1rem;
+  --fs-small:     0.875rem;
+  --fs-eyebrow:   0.8125rem;
+
+  /* Line heights */
+  --lh-tight:     1.05;
+  --lh-snug:      1.2;
+  --lh-normal:    1.5;
+  --lh-relaxed:   1.65;
+
+  /* Tracking */
+  --ls-tight:     -0.02em;
+  --ls-normal:    0;
+  --ls-wide:      0.04em;
+  --ls-eyebrow:   0.14em;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ===========================================================================
+   SPACING, RADII, SHADOWS, MOTION
+   The brand is built on squares — radii are small and crisp, not pill-soft.
+   ===========================================================================*/
+:root {
+  /* Spacing scale (4px base) */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-7:  2.5rem;
+  --space-8:  3rem;
+  --space-9:  4rem;
+  --space-10: 5rem;
+  --space-12: 7rem;
+
+  /* Section rhythm */
+  --section-pad-y: clamp(3.5rem, 7vw, 7rem);
+  --container-max: 1440px;
+  --container-pad: clamp(1.25rem, 4vw, 3rem);
+
+  /* Radii — squared brand, kept tight */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+
+  /* Borders */
+  --border-width: 1px;
+  --border-width-strong: 2px;
+
+  /* Shadows — clean, cool-blue tinted, never heavy */
+  --shadow-xs: 0 1px 2px rgba(0, 51, 153, 0.06);
+  --shadow-sm: 0 2px 8px rgba(0, 51, 153, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 51, 153, 0.1);
+  --shadow-lg: 0 18px 48px rgba(0, 51, 153, 0.14);
+  --shadow-brand: 0 12px 32px rgba(0, 51, 153, 0.28);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
+}
+
+/* ===========================================================================
+   BASE / RESET
+   ===========================================================================*/
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--text-heading);
+  line-height: var(--lh-snug);
+  margin: 0;
+}
+
+p { margin: 0; }
+a { color: var(--text-link); text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; }
+
+/* Eyebrow / kicker label */
+.mte-eyebrow {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* ---------------------------------------------------------------------------
+   BRAND SQUARE PATTERN
+   The hallmark MTE motif: scattered squares, some filled translucent, some
+   outlined in cyan. Apply .mte-pattern to a dark-blue surface.
+   The exact scattered look ships as /pattern-squares.svg; this is the tiling
+   fallback.
+   ---------------------------------------------------------------------------*/
+.mte-pattern {
+  position: relative;
+  background-color: var(--mte-blue);
+  background-image:
+    /* outlined cyan squares */
+    linear-gradient(var(--mte-cyan) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, var(--mte-cyan) 1.5px, transparent 1.5px),
+    /* filled translucent squares offset */
+    linear-gradient(rgba(255, 255, 255, 0.05) 0 0);
+  background-size: 86px 86px, 86px 86px, 86px 86px;
+  background-position: 0 0, 0 0, 43px 43px;
+}
+
+.mte-pattern--soft::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, transparent 0%, var(--mte-blue) 72%);
+  pointer-events: none;
+}
+
+/* ===========================================================================
+   LAYOUT UTILITIES  (from ui_kits/landing-retrofit/index.html)
+   ===========================================================================*/
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.section { padding-block: var(--section-pad-y); }
+.section--alt { background: var(--surface-page-alt); }
+.section--brand { background: var(--mte-blue); color: #fff; }
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-normal);
+  color: var(--text-body);
+}
+
+/* Icon sizing */
+.ic-sm { width: 18px; height: 18px; }
+.ic-md { width: 22px; height: 22px; }
+.ic-lg { width: 26px; height: 26px; }
+
+/* Reusable grids */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+/* 6 benefit cards are meant to read as 2 rows of 3. At the 1200px container the
+   280px min produced exactly 3 columns; widening to 1440px let a 4th fit and
+   left a ragged 4+2. A 320px min restores 3 columns at 1440 and still degrades
+   to 2 / 1 on tablet and phone. */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-5);
+}
+
+/* Check lists — the ✓ bullet is an inline SVG data-URI, never an emoji */
+ul.checks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+ul.checks li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  line-height: var(--lh-normal);
+}
+ul.checks li::before {
+  content: "";
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  background: var(--mte-blue-50);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23003399' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-top: 2px;
+}
+ul.checks.on-brand li::before {
+  background: rgba(255, 255, 255, 0.1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232BA8DB' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Flagged placeholder: client to supply photos / logos / testimonials */
+.img-ph {
+  background: var(--mte-blue-50);
+  border: 1px dashed var(--mte-blue-200);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--mte-blue-400);
+  font-family: var(--font-body);
+  font-size: 13px;
+  text-align: center;
+  padding: 24px;
+  min-height: 280px;
+}
+.img-ph[data-on-brand] {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--mte-blue-200);
+}
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ===========================================================================
+   COMPONENT INTERACTION
+   Upstream drove hover with inline onMouseEnter/onMouseLeave handlers, which
+   would force every component into a Client Component. Same visuals, done in
+   CSS, so Button / FeatureCard / Card stay server-rendered.
+   ===========================================================================*/
+
+/* Buttons — lift 1px and brighten ~6% on hover */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast),
+    color var(--dur-fast),
+    filter var(--dur-fast),
+    transform var(--dur-fast);
+}
+.btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(43, 168, 219, 0.45);
+}
+
+.btn--sm { padding: 8px 16px; font-size: 13px; height: 38px; }
+.btn--md { padding: 12px 24px; font-size: 15px; height: 48px; }
+.btn--lg { padding: 16px 32px; font-size: 16px; height: 56px; }
+.btn--full { width: 100%; }
+
+.btn--primary        { background: var(--mte-blue); color: #fff; border-color: var(--mte-blue); }
+.btn--secondary      { background: transparent; color: var(--mte-blue); border-color: var(--mte-blue); }
+.btn--ghost          { background: transparent; color: var(--mte-blue); border-color: transparent; }
+.btn--onBrand        { background: #fff; color: var(--mte-blue); border-color: #fff; }
+.btn--onBrandOutline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.55); }
+.btn--whatsapp       { background: var(--whatsapp); color: #fff; border-color: var(--whatsapp); }
+.btn--phone          { background: transparent; color: var(--mte-blue); border-color: var(--mte-blue-200); }
+
+/* Feature cards — lift 3px and deepen shadow */
+.feature-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur-base), transform var(--dur-base);
+}
+.feature-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+}
+
+/* Form fields — 3px cyan focus glow */
+.field-control {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-heading);
+  background: #fff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.field-control:focus {
+  border-color: var(--mte-cyan);
+  box-shadow: 0 0 0 3px rgba(43, 168, 219, 0.18);
+}
+textarea.field-control { resize: vertical; }
+select.field-control {
+  appearance: none;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--mte-gray-500) 50%),
+    linear-gradient(135deg, var(--mte-gray-500) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+/* Header responsive behaviour (was an inline <style> tag upstream) */
+@media (max-width: 920px) { .hdr-nav { display: none !important; } }
+@media (max-width: 560px) {
+  .hdr-phone { display: none; }
+  /* The "GLOBAL SOLUTIONS" descriptor is nowrap; at this width the lockup plus
+     the CTA overflows the viewport. Drop the descriptor, keep mark + wordmark. */
+  header .logo-descriptor { display: none; }
+}
+
+/* Motion: restrained. Respect the user's reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn:hover,
+  .feature-card:hover { transform: none; }
 }
