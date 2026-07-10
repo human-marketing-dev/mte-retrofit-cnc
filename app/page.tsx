@@ -1,6 +1,7 @@
 import { Footer, PorQueMTE, Proceso } from "@/components/landing/Closing";
 import { ContactoCTA } from "@/components/landing/ContactoCTA";
-import { FloatingWhatsApp, Header, Hero } from "@/components/landing/Header";
+import { FloatingWhatsApp } from "@/components/landing/FloatingWhatsApp";
+import { Header, Hero } from "@/components/landing/Header";
 import {
   Beneficios,
   CtaIntermedio,

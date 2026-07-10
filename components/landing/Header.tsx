@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
-import { ArrowRight, Award, BadgeCheck, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowRight, Award, BadgeCheck, MapPin, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { DiagnosticoForm } from "./DiagnosticoForm";
 import { Logo } from "./Logo";
-import { PATTERN_SRC, PHONE_DISPLAY, PHONE_HREF, WA_LINK } from "./constants";
+import { PATTERN_SRC, PHONE_DISPLAY, PHONE_HREF } from "./constants";
 
 const navLink: CSSProperties = {
   fontFamily: "var(--font-body)",
@@ -201,31 +201,5 @@ export function Hero() {
   );
 }
 
-export function FloatingWhatsApp() {
-  return (
-    <a
-      href={WA_LINK}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Contactar por WhatsApp"
-      style={{
-        position: "fixed",
-        right: "22px",
-        bottom: "22px",
-        zIndex: 60,
-        width: "60px",
-        height: "60px",
-        borderRadius: "50%",
-        background: "var(--whatsapp)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#fff",
-        boxShadow: "0 8px 24px rgba(37,211,102,0.45)",
-        textDecoration: "none",
-      }}
-    >
-      <MessageCircle style={{ width: "30px", height: "30px" }} aria-hidden="true" />
-    </a>
-  );
-}
+/* FloatingWhatsApp moved to its own client component (it now opens a chat
+   popup), so Header.tsx stays a Server Component. */
