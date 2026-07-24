@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { MessageCircle, X } from "lucide-react";
 
+import { WhatsAppLink } from "@/components/analytics/WhatsAppLink";
 import { WA_DISPLAY, WA_LINK } from "./constants";
 
 /**
@@ -155,13 +156,13 @@ export function FloatingWhatsApp() {
             </div>
           </div>
 
-          {/* CTA — the only thing that actually opens WhatsApp */}
+          {/* CTA — the only thing that actually opens WhatsApp, and therefore
+              the only click reported as `whatsapp_click`. */}
           <div style={{ padding: "0 16px 16px" }}>
-            <a
+            <WhatsAppLink
               ref={ctaRef}
               href={WA_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
+              linkLocation="floating_widget"
               onClick={() => setOpen(false)}
               style={{
                 display: "flex",
@@ -181,7 +182,7 @@ export function FloatingWhatsApp() {
             >
               <MessageCircle style={{ width: "20px", height: "20px" }} aria-hidden="true" />
               Iniciar conversación
-            </a>
+            </WhatsAppLink>
             <p
               style={{
                 margin: "10px 0 0",

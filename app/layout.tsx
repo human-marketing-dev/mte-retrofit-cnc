@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Montserrat, Roboto } from "next/font/google";
 import "./globals.css";
 
+import {
+  AnalyticsProvider,
+  GoogleTagManager,
+  GoogleTagManagerNoScript,
+} from "@/lib/analytics";
+
 /* Two families only: Montserrat for headings, Roboto for body.
    Both are variable fonts, so no explicit weight list is needed. */
 const montserrat = Montserrat({
@@ -37,7 +43,13 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${montserrat.variable} ${roboto.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {/* Google Tag Manager — the noscript iframe belongs immediately after
+            the opening <body>, per Google's install instructions. */}
+        <GoogleTagManagerNoScript />
+        <AnalyticsProvider>{children}</AnalyticsProvider>
+        <GoogleTagManager />
+      </body>
     </html>
   );
 }

@@ -27,9 +27,12 @@ type LogoProps = {
   onBrand?: boolean;
   /** Rendered height of the lockup, in px. Width follows the aspect ratio. */
   height?: number;
+  /** Where the lockup links. Defaults to the top of the current page; legal
+   *  pages pass "/" so the logo returns to the landing. */
+  href?: string;
 };
 
-export function Logo({ onBrand = false, height = 38 }: LogoProps) {
+export function Logo({ onBrand = false, height = 38, href = "#top" }: LogoProps) {
   const { src, w, h } = VARIANTS[onBrand ? "white" : "blue"];
   // Rendered width, used only to hint `sizes` — the box is reserved from the
   // intrinsic w/h below, so this never has to be pixel-exact.
@@ -37,7 +40,7 @@ export function Logo({ onBrand = false, height = 38 }: LogoProps) {
 
   return (
     <a
-      href="#top"
+      href={href}
       aria-label="MTE Global Solutions — inicio"
       style={{ display: "inline-flex", alignItems: "center", textDecoration: "none" }}
     >

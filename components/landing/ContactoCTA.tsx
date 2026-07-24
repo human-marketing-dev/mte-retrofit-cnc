@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { MessageCircle, Phone } from "lucide-react";
 
+import { WhatsAppLink } from "@/components/analytics/WhatsAppLink";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { DiagnosticoForm } from "./DiagnosticoForm";
@@ -72,7 +73,7 @@ export function ContactoCTA() {
             retrofit y cuál es la mejor solución para su caso.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "28px" }}>
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer" style={ctaRow}>
+            <WhatsAppLink href={WA_LINK} linkLocation="contacto_section" style={ctaRow}>
               <span style={{ ...ctaIcon, background: "var(--whatsapp)" }}>
                 <MessageCircle className="ic-md" aria-hidden="true" />
               </span>
@@ -80,7 +81,7 @@ export function ContactoCTA() {
                 <div style={ctaLbl}>WhatsApp directo</div>
                 <div style={ctaVal}>Respuesta inmediata</div>
               </div>
-            </a>
+            </WhatsAppLink>
             <a href={PHONE_HREF} style={ctaRow}>
               <span style={{ ...ctaIcon, background: "var(--mte-cyan)" }}>
                 <Phone className="ic-md" aria-hidden="true" />
@@ -94,7 +95,7 @@ export function ContactoCTA() {
         </div>
 
         <Card tone="light" padding="clamp(24px,3vw,36px)">
-          <DiagnosticoForm />
+          <DiagnosticoForm formId="contacto" />
         </Card>
       </div>
     </section>

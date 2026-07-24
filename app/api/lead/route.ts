@@ -25,10 +25,32 @@ const NOTIFY_TO = "alejandro.rico@mteglobalsolutions.com";
 /** The fields the form sends, in the order we render them in the email. */
 const LEAD_FIELDS: ReadonlyArray<{ key: string; label: string }> = [
   { key: "nombre", label: "Nombre" },
+  { key: "apellido", label: "Apellido" },
   { key: "empresa", label: "Empresa" },
   { key: "telefono", label: "Teléfono / WhatsApp" },
   { key: "correo", label: "Correo" },
   { key: "equipo", label: "Tipo de máquina y marca de control" },
+];
+
+/**
+ * Campaign attribution, rendered as a second table in the notification.
+ *
+ * Sales gets to see which campaign produced the lead without opening GA4, and
+ * the values survive in the mailbox even if the visitor's session storage is
+ * long gone.
+ */
+const ATTRIBUTION_FIELDS: ReadonlyArray<{ key: string; label: string }> = [
+  { key: "utm_source", label: "Fuente (utm_source)" },
+  { key: "utm_medium", label: "Medio (utm_medium)" },
+  { key: "utm_campaign", label: "Campaña (utm_campaign)" },
+  { key: "utm_term", label: "Término (utm_term)" },
+  { key: "utm_content", label: "Contenido (utm_content)" },
+  { key: "utm_id", label: "ID de campaña (utm_id)" },
+  { key: "gclid", label: "Google Ads (gclid)" },
+  { key: "fbclid", label: "Meta (fbclid)" },
+  { key: "msclkid", label: "Microsoft (msclkid)" },
+  { key: "landing_page", label: "Página de entrada" },
+  { key: "referrer", label: "Referente" },
 ];
 
 // Deliberately simple, permissive email shape — just enough to reject obvious
@@ -49,6 +71,32 @@ function asString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+/** One `<tr>` per field that has a value, or null if the table would be empty. */
+function buildRows(
+  fields: ReadonlyArray<{ key: string; label: string }>,
+  source: Record<string, unknown>,
+  { skipEmpty = false }: { skipEmpty?: boolean } = {},
+): string | null {
+  const rows = fields
+    .map(({ key, label }) => {
+      const value = asString(source[key]);
+      if (!value && skipEmpty) return "";
+      return `<tr>
+      <td style="padding:8px 12px;border:1px solid #dde0e7;font-weight:600;color:#141820;background:#f6f7f9;">${escapeHtml(label)}</td>
+      <td style="padding:8px 12px;border:1px solid #dde0e7;color:#353c49;">${value ? escapeHtml(value) : "—"}</td>
+    </tr>`;
+    })
+    .join("");
+
+  return rows || null;
+}
+
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
   try {
@@ -64,11 +112,22 @@ export async function POST(request: Request) {
   }
 
   const nombre = asString(body.nombre);
+  const apellido = asString(body.apellido);
   const correo = asString(body.correo);
 
   if (!nombre || !correo || !EMAIL_RE.test(correo)) {
     return Response.json(
       { success: false, error: "Nombre y correo válido son obligatorios." },
+      { status: 400 },
+    );
+  }
+
+  // The consent checkbox gates the submit button in the UI; enforcing it here
+  // too means a lead can never be stored or emailed without it, whatever the
+  // client did. Consent is the lawful basis for the whole treatment.
+  if (body.privacidad_aceptada !== true) {
+    return Response.json(
+      { success: false, error: "Debe aceptar el aviso de privacidad." },
       { status: 400 },
     );
   }
@@ -82,19 +141,46 @@ export async function POST(request: Request) {
     );
   }
 
-  const rows = LEAD_FIELDS.map(({ key, label }) => {
-    const value = asString(body[key]);
-    return `<tr>
-      <td style="padding:8px 12px;border:1px solid #dde0e7;font-weight:600;color:#141820;background:#f6f7f9;">${escapeHtml(label)}</td>
-      <td style="padding:8px 12px;border:1px solid #dde0e7;color:#353c49;">${value ? escapeHtml(value) : "—"}</td>
-    </tr>`;
-  }).join("");
+  const rows = buildRows(LEAD_FIELDS, body) ?? "";
+
+  const attribution = asRecord(body.attribution);
+  const lastTouch = asRecord(attribution.last_touch);
+  const firstTouch = asRecord(attribution.first_touch);
+  const originRows = buildRows(ATTRIBUTION_FIELDS, lastTouch, { skipEmpty: true });
+  const firstTouchRows = buildRows(ATTRIBUTION_FIELDS, firstTouch, { skipEmpty: true });
+
+  const tableStyle = `border-collapse:collapse;width:100%;max-width:640px;`;
+  const sectionTitle = `margin:24px 0 10px;color:#003399;font-size:15px;`;
+
+  const formLabel = asString(body.form_name) || "Formulario de la landing";
+  const formId = asString(body.form_id);
+  const pageLocation = asString(body.page_location);
 
   const htmlContent = `<!doctype html>
 <html lang="es"><body style="margin:0;padding:24px;background:#eef2fa;font-family:Arial,Helvetica,sans-serif;">
   <h2 style="margin:0 0 16px;color:#003399;">Nuevo lead de la landing de Retrofit CNC</h2>
-  <table style="border-collapse:collapse;width:100%;max-width:640px;">${rows}</table>
+  <table style="${tableStyle}">${rows}</table>
+
+  ${
+    originRows
+      ? `<h3 style="${sectionTitle}">Origen de la visita (último contacto)</h3>
+  <table style="${tableStyle}">${originRows}</table>`
+      : `<p style="margin:24px 0 0;font-size:13px;color:#6c7484;">Sin parámetros de campaña: tráfico directo u orgánico.</p>`
+  }
+  ${
+    firstTouchRows && firstTouchRows !== originRows
+      ? `<h3 style="${sectionTitle}">Primer contacto</h3>
+  <table style="${tableStyle}">${firstTouchRows}</table>`
+      : ""
+  }
+
   <p style="margin:20px 0 0;font-size:12px;color:#6c7484;">
+    Formulario: ${escapeHtml(formLabel)}${formId ? ` (${escapeHtml(formId)})` : ""}${
+      pageLocation ? `<br>Página: ${escapeHtml(pageLocation)}` : ""
+    }<br>
+    Aviso de privacidad aceptado por el prospecto al enviar el formulario.
+  </p>
+  <p style="margin:12px 0 0;font-size:12px;color:#6c7484;">
     Puede responder directamente a este correo para contactar al prospecto.
   </p>
 </body></html>`;
@@ -110,8 +196,8 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         sender: SENDER,
         to: [{ email: NOTIFY_TO }],
-        replyTo: { email: correo, name: nombre },
-        subject: `Nuevo lead: ${nombre}`,
+        replyTo: { email: correo, name: [nombre, apellido].filter(Boolean).join(" ") },
+        subject: `Nuevo lead: ${[nombre, apellido].filter(Boolean).join(" ")}`,
         htmlContent,
       }),
     });

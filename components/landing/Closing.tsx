@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ProcessStep } from "@/components/ui/ProcessStep";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Logo } from "./Logo";
-import { PHONE_DISPLAY, PHONE_HREF } from "./constants";
+import { COMPANY, PHONE_DISPLAY, PHONE_HREF } from "./constants";
 
 const PASOS = [
   [
@@ -142,12 +142,26 @@ export function Footer() {
           justifyContent: "space-between",
         }}
       >
-        <Logo onBrand height={42} />
-        <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", fontSize: "14px" }}>
+        <Logo onBrand height={42} href="/" />
+        <div
+          style={{
+            display: "flex",
+            gap: "24px",
+            flexWrap: "wrap",
+            alignItems: "center",
+            fontSize: "14px",
+          }}
+        >
           <a href={PHONE_HREF} style={{ color: "#fff", textDecoration: "none" }}>
             {PHONE_DISPLAY}
           </a>
           <span>Servicio en todo México</span>
+          <a
+            href="/privacidad"
+            style={{ color: "#fff", textDecoration: "underline", textUnderlineOffset: "2px" }}
+          >
+            Aviso de privacidad
+          </a>
         </div>
       </div>
       <div
@@ -159,7 +173,8 @@ export function Footer() {
           fontSize: "12px",
         }}
       >
-        © {new Date().getFullYear()} MTE Global Solutions · Retrofit y cambio de control CNC.
+        © {new Date().getFullYear()} {COMPANY.brandName} · {COMPANY.legalName} · RFC{" "}
+        {COMPANY.rfc} · Retrofit y cambio de control CNC.
       </div>
     </footer>
   );

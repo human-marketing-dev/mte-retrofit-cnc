@@ -15,7 +15,16 @@ const navLink: CSSProperties = {
   textDecoration: "none",
 };
 
-export function Header() {
+export type HeaderProps = {
+  /**
+   * Prefix for the in-page anchors. Empty on the landing, where "#proceso"
+   * scrolls; "/" on standalone pages like /privacidad, where the same links
+   * have to navigate home first or they do nothing.
+   */
+  hrefBase?: string;
+};
+
+export function Header({ hrefBase = "" }: HeaderProps = {}) {
   return (
     <header
       style={{
@@ -38,15 +47,15 @@ export function Header() {
           gap: "20px",
         }}
       >
-        <Logo height={46} />
+        <Logo height={46} href={hrefBase ? hrefBase : "#top"} />
         <nav className="hdr-nav" style={{ display: "flex", alignItems: "center", gap: "28px" }}>
-          <a href="#proceso" style={navLink}>
+          <a href={`${hrefBase}#proceso`} style={navLink}>
             Proceso
           </a>
-          <a href="#beneficios" style={navLink}>
+          <a href={`${hrefBase}#beneficios`} style={navLink}>
             Beneficios
           </a>
-          <a href="#maquinas" style={navLink}>
+          <a href={`${hrefBase}#maquinas`} style={navLink}>
             Máquinas
           </a>
         </nav>
@@ -67,7 +76,7 @@ export function Header() {
             <Phone className="ic-sm" aria-hidden="true" />
             <span className="hdr-phone">{PHONE_DISPLAY}</span>
           </a>
-          <Button variant="primary" size="sm" href="#contacto">
+          <Button variant="primary" size="sm" href={`${hrefBase}#contacto`}>
             Diagnóstico sin costo
           </Button>
         </div>
@@ -194,7 +203,7 @@ export function Hero() {
         {/* Lead form, above the fold. Same component as the closing CTA — each
             instance keeps its own submitted state. */}
         <Card tone="light" padding="clamp(22px,2.5vw,32px)">
-          <DiagnosticoForm headingAs="h2" compact />
+          <DiagnosticoForm formId="hero" headingAs="h2" compact />
         </Card>
       </div>
     </section>

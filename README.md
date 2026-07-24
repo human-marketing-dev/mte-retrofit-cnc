@@ -1,5 +1,38 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Medición (Google Tag Manager)
+
+Todo el sistema de medición vive en `lib/analytics/` y se consume desde
+`@/lib/analytics`. Ningún componente toca `window.dataLayer` directamente.
+
+- **Contenedor**: `NEXT_PUBLIC_GTM_ID` (por defecto `GTM-5G5699ZJ`). Déjalo
+  vacío para desactivar GTM en un preview.
+- **Atribución**: `attribution.ts` captura UTMs y click ids (`gclid`, `fbclid`,
+  `msclkid`, …) de la URL de entrada. Guarda *first touch* en `localStorage` y
+  *last touch* en `sessionStorage`, y los republica en el dataLayer en cada
+  cambio de ruta.
+- **Eventos**: `generate_lead` (envío de formulario aceptado por la API) y
+  `whatsapp_click` (clic que realmente abre WhatsApp). Ambos salen con el
+  contexto de página y la atribución adjuntos.
+
+Payload de `generate_lead`:
+
+| Clave | Contenido |
+| --- | --- |
+| `form_id`, `form_name`, `form_destination` | qué formulario disparó el evento (`hero`, `contacto`) |
+| `user_data` | `email_address`, `phone_number`, `address.first_name`, `address.last_name`, normalizados sin hashear — las etiquetas de Google y Meta los hashean |
+| `lead_details` | `empresa`, `equipo` |
+| `utm_*`, `gclid`, `fbclid`, … | último contacto, planos en la raíz |
+| `attribution.first_touch` / `.last_touch` | ambos contactos completos |
+| `page_location`, `page_path`, `page_title`, `page_referrer` | contexto de página |
+
+`whatsapp_click` añade `link_location` (`floating_widget`, `contacto_section`) y
+`link_url`.
+
+En GTM, las variables de tipo *Data Layer* que hay que crear son `user_data`
+(para conversiones mejoradas y advanced matching), `form_id` y las `utm_*` que
+se quieran reportar.
+
 ## Getting Started
 
 First, run the development server:
