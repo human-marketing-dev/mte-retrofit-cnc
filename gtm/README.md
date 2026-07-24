@@ -37,10 +37,26 @@ plantilla del píxel de Meta) queda intacto, byte por byte.
 - **`Variable Selector Email Form_GAds`** → renombrada a
   `UPD - Enhanced Conversions (dataLayer)`. Pasa de leer el selector DOM
   `#form-field-email` (un id de Elementor que no existe en este sitio) a modo
-  manual con correo, teléfono, nombre y apellido del dataLayer.
+  manual con `{{DLV - user_data.email_address}}`.
 - **`Variable Selector Email Form`** → renombrada a
-  `ZZ - [OBSOLETO] Selector Email Form (Elementor)`. Se conserva por si algo
+  `ZZ - OBSOLETO Selector Email Form Elementor`. Se conserva por si algo
   externo la referencia, pero ya no la usa ninguna etiqueta.
+
+### Paso manual después de importar (30 segundos)
+
+El archivo solo trae el **correo** en la variable UPD. Los nombres internos de
+los campos de teléfono y nombre en el export de una variable *User-Provided
+Data* no son públicos, y meterlos a ciegas es lo que puede hacer que GTM
+rechace el archivo con «File format is invalid». Así que se agregan a mano:
+
+1. Abrir `UPD - Enhanced Conversions (dataLayer)`.
+2. Añadir tres campos más y mapearlos:
+   - Teléfono → `{{DLV - user_data.phone_number}}`
+   - Nombre → `{{DLV - user_data.first_name}}`
+   - Apellido → `{{DLV - user_data.last_name}}`
+
+Con solo el correo las conversiones mejoradas ya funcionan; los otros tres
+suben la tasa de coincidencia.
 
 ### Etiquetas modificadas
 
