@@ -278,7 +278,7 @@ export function LeadForm({
         {showEquipo && (
           <Field
             label="Tipo de máquina y marca de control"
-            hint="Ej. Torno Fanuc 0i, Fresadora Siemens 840D"
+            hint="Ej. Torno Fanuc 0i, Fresadora Heidenhain TNC 355"
           >
             <Input
               id={fieldId("equipo")}
