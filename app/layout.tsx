@@ -4,7 +4,6 @@ import "./globals.css";
 
 import {
   AnalyticsProvider,
-  GoogleAds,
   GoogleTagManager,
   GoogleTagManagerNoScript,
 } from "@/lib/analytics";
@@ -50,7 +49,6 @@ export default function RootLayout({
         <GoogleTagManagerNoScript />
         <AnalyticsProvider>{children}</AnalyticsProvider>
         <GoogleTagManager />
-        <GoogleAds />
       </body>
     </html>
   );

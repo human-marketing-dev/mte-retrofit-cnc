@@ -17,7 +17,6 @@
  */
 
 export { AnalyticsProvider } from "./AnalyticsProvider";
-export { GoogleAds, GOOGLE_ADS_ID } from "./GoogleAds";
 export { GoogleTagManager, GoogleTagManagerNoScript, GTM_ID } from "./GoogleTagManager";
 export {
   CLICK_ID_KEYS,
